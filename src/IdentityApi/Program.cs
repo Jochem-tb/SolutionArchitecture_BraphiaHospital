@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using OnlineToestemming.IdentityApi;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddServiceDefaults();
 
 builder.Services.AddOpenApi();
 
@@ -19,7 +18,6 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -6,7 +6,7 @@ using OnlineToestemming.Data;
 using OnlineToestemming.PseudoniemApi;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddServiceDefaults();
+
 
 builder.Services.AddOpenApi();
 
@@ -39,7 +39,6 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

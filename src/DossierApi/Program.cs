@@ -7,7 +7,6 @@ using OnlineToestemming.Data;
 using OnlineToestemming.DossierApi;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddServiceDefaults();
 
 builder.Services.AddOpenApi();
 
@@ -32,7 +31,6 @@ builder.Services.AddHttpClient(
 );
 
 builder.Services.AddScoped<IPseudoniemService, PseudoniemService>();
-
 var jwtKey = builder.Configuration["JwtSettings:SecretSigningKey"]!;
 
 builder
@@ -57,7 +55,6 @@ builder
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

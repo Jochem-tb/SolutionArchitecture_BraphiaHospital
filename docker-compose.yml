@@ -1,20 +1,23 @@
 services:
   rabbitmq:
-      image: rabbitmq:latest
-      container_name: rabbitmq
-      restart: always
-      ports:
-        - 5672:5672
-        - 15672:15672
-      environment:
-        RABBITMQ_DEFAULT_USER: kalo
-        RABBITMQ_DEFAULT_PASS: kalo
-      configs:
-        - source: rabbitmq-plugins
-          target: /etc/rabbitmq/enabled_plugins
-      volumes:
-        - rabbitmq-lib:/var/lib/rabbitmq/
-        - rabbitmq-log:/var/log/rabbitmq
+    image: rabbitmq:3-management # TIP: Changed 'latest' to '3-management' so you actually get the Web UI dashboard!
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    volumes:
+      - rabbitmq-lib:/var/lib/rabbitmq/
+      - rabbitmq-log:/var/log/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -102,6 +105,26 @@ services:
         condition: service_completed_successfully
       identityapi:
         condition: service_started
+        
+  patientservice:
+    build:
+      context: .
+      dockerfile: src/PatientService/Dockerfile
+    ports:
+      - "5000:8080"
+    # 2. Update this to wait for the health check
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+  
+  messageservice:
+      build:
+        context: .
+        dockerfile: src/MessageService/Dockerfile
+      # 3. Update this to wait for the health check
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
 
 volumes:
   sqldata:
