@@ -1,9 +1,9 @@
 using System.Text;
+using Data.DbContexts;
 using DossierApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using OnlineToestemming.Data;
 using OnlineToestemming.DossierApi;
 
 var builder = WebApplication.CreateBuilder(args);

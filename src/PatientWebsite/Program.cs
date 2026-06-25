@@ -1,6 +1,6 @@
+using Data.DbContexts;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using OnlineToestemming.Data;
 using PatientWebsite.Api;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Data.OldModels;
+using Microsoft.EntityFrameworkCore;
 
-namespace OnlineToestemming.Data;
+namespace Data.DbContexts;
 
 public class AllContext : DbContext
 {

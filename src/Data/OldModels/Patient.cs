@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OnlineToestemming.Data;
+namespace Data.OldModels;
 
 public sealed class Patient
 {

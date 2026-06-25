@@ -10,16 +10,16 @@
 
     <ItemGroup>
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.10" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
     </ItemGroup> 
 
     <ItemGroup>
       <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
-    </ItemGroup>
+    </ItemGroup> 
 
     <ItemGroup>
-      <ProjectReference Include="..\Contracts\Contracts.csproj" />
+      <ProjectReference Include="..\Data\Data.csproj" />
     </ItemGroup>
 </Project>

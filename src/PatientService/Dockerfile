@@ -6,7 +6,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # 1. Copy the project files into their matching destination folders
-COPY ["src/Contracts/Contracts.csproj", "src/Contracts/"]
+COPY ["src/Data/Data.csproj", "src/Data/"]
 COPY ["src/PatientService/PatientService.csproj", "src/PatientService/"]
 COPY NuGet.config .
 
@@ -14,7 +14,7 @@ COPY NuGet.config .
 RUN dotnet restore "src/PatientService/PatientService.csproj"
 
 # 3. Copy the actual source code folders before publishing
-COPY src/Contracts/ src/Contracts/
+COPY src/Data/ src/Data/
 COPY src/PatientService/ src/PatientService/
 
 # 4. Publish directly from the /src root using the full path

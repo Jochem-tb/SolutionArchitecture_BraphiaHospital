@@ -1,4 +1,4 @@
-﻿namespace Contracts;
+﻿namespace Data.Contracts;
 
 
 public record PatientRegistered

@@ -1,5 +1,5 @@
+using Data.Contracts;
 using MassTransit;
-using Contracts;
 using Microsoft.Extensions.Logging;
 
 namespace MessageService;

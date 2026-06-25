@@ -1,7 +1,7 @@
 ﻿using PatientService;
-using Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Data.Contracts;
 namespace PatientService;
 
 

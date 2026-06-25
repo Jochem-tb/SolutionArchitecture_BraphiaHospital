@@ -1,8 +1,8 @@
 using System.Text;
+using Data.DbContexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using OnlineToestemming.Data;
 using OnlineToestemming.PseudoniemApi;
 
 var builder = WebApplication.CreateBuilder(args);
