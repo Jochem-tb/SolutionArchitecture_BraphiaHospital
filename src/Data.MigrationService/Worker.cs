@@ -21,9 +21,13 @@ public class Worker(
         try
         {
             using var scope = serviceProvider.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<AllContext>();
 
-            await RunMigrationAsync(dbContext, cancellationToken);
+            //Hier nieuwe db's toevoegen voor het uitvoeren van migraties
+            var allContext = scope.ServiceProvider.GetRequiredService<AllContext>();
+            var appointmentDbContext = scope.ServiceProvider.GetRequiredService<AppointmentDbContext>();
+
+            await RunMigrationAsync(allContext, cancellationToken);
+            await RunMigrationAsync(appointmentDbContext, cancellationToken);
             //  await SeedDataAsync(dbContext, cancellationToken);
         }
         catch (Exception ex)
@@ -36,7 +40,7 @@ public class Worker(
     }
 
     private static async Task RunMigrationAsync(
-        AllContext dbContext, CancellationToken cancellationToken)
+        DbContext dbContext, CancellationToken cancellationToken)
     {
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
