@@ -1,5 +1,7 @@
 using AppointmentManagementApi;
+using AppointmentManagementApi.Consumers;
 using Data.DbContexts;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -12,6 +14,26 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppointmentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AppointmentManagementDb"))
 );
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<PatientRegisteredConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("rabbitmq", "/", h =>
+        {
+            h.Username("admin");
+            h.Password("admin123");
+        });
+
+        cfg.ReceiveEndpoint("Appointment-service", e =>
+        {
+            e.ConfigureConsumers(context);
+        });
+
+    });
+});
 
 var app = builder.Build();
 

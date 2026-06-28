@@ -14,7 +14,7 @@ public static class PatientEndpoints
         {
             var message = new PatientRegistered
             {
-                PatientId = Guid.NewGuid().ToString(),
+                PatientId = Guid.NewGuid(),
                 Name = request.Name
             };
 
