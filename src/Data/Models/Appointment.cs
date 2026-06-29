@@ -15,6 +15,6 @@ public class Appointment
     public required DateTime DateTime { get; set; }
     public required AppointmentArrivalStatus ArrivalStatus { get; set; }
     public required AppointmentScheduleStatus ScheduleStatus { get; set; }
-    public required PatientSmall Patient {  get; set; }
+    public PatientSmall? Patient {  get; set; }
     public HealthQuestionaire? HealthQuestionaire { get; set; }
 }

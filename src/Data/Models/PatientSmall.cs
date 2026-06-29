@@ -8,5 +8,5 @@ public class PatientSmall
 {
     public required Guid Id { get; set; }
     public required string Name { get; set; }
-    public Appointment[] Appointments { get; set; } = [];
+    public ICollection<Appointment> Appointments { get; set; } = [];
 }
