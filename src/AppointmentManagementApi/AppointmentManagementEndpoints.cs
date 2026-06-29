@@ -1,6 +1,8 @@
-﻿using Data.DbContexts;
+﻿using Data.Contracts;
+using Data.DbContexts;
 using Data.Enums;
 using Data.Models;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +12,7 @@ public static class AppointmentManagementEndpoints
 {
     public static WebApplication MapAppointmentManagementEndpoints(this WebApplication app)
     {
-        app.MapPost("/appointment", async ([FromBody] ScheduleAppointmentRequest request, AppointmentDbContext db) =>
+        app.MapPost("/appointment", async ([FromBody] ScheduleAppointmentRequest request, AppointmentDbContext db, IPublishEndpoint publishEndpoint) =>
         {
 
             PatientSmall? patient = await db.Patients.FirstOrDefaultAsync(x => x.Id == request.PatientId);
@@ -32,8 +34,18 @@ public static class AppointmentManagementEndpoints
             };
 
             await db.Appointments.AddAsync(newAppointment);
-
             await db.SaveChangesAsync();
+
+            var message = new AppointmentPlanned
+            {
+                PatientId = newAppointment.PatientId,
+                AppointmentId = newAppointment.Id,
+                PhysicianId = newAppointment.PhysicianId,
+                ReferralId = newAppointment.ReferalId,
+                ScheduledAt = newAppointment.DateTime
+            };
+
+            await publishEndpoint.Publish(message);
 
             PatientDto patientDto = new(patient.Id, patient.Name);
             AppointmentDto appointmentDto = new(
