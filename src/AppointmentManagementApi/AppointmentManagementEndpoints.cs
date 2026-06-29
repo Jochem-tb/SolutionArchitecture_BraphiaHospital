@@ -1,34 +1,57 @@
-﻿namespace AppointmentManagementApi;
+﻿using Data.DbContexts;
+using Data.Enums;
+using Data.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace AppointmentManagementApi;
 
 public static class AppointmentManagementEndpoints
 {
     public static WebApplication MapAppointmentManagementEndpoints(this WebApplication app)
     {
-        //app.MapGet("/pseudoniem/{bsn}", async (string bsn, AllContext db) =>
-        //{
-        //    var entry = await db.Pseudoniemen.FirstOrDefaultAsync(p => p.Bsn == bsn);
+        app.MapPost("/appointment", async ([FromBody] ScheduleAppointmentRequest request, AppointmentDbContext db) =>
+        {
 
-        //    if (entry is null)
-        //    {
-        //        // Create a new pseudoniem for this BSN
-        //        var newPseudoniem = new BsnPseudoniem
-        //        {
-        //            Id = 0,
-        //            Bsn = bsn,
-        //            Pseudoniem = Guid.NewGuid().ToString()
-        //        };
+            PatientSmall? patient = await db.Patients.FirstOrDefaultAsync(x => x.Id == request.PatientId);
 
-        //        db.Pseudoniemen.Add(newPseudoniem);
-        //        await db.SaveChangesAsync();
+            if(patient == null)
+            {
+                return Results.NotFound( new { ErrorMessage = "Unknown patient id" });
+            }
 
-        //        return Results.Ok(new { newPseudoniem.Pseudoniem });
-        //    }
+            Appointment newAppointment = new Appointment()
+            {
+                Id = Guid.NewGuid(),
+                PatientId = request.PatientId,
+                DateTime = request.DateTime,
+                PhysicianId = Guid.NewGuid(),
+                ReferalId = Guid.NewGuid(),
+                ArrivalStatus = AppointmentArrivalStatus.Pending,
+                ScheduleStatus = AppointmentScheduleStatus.Scheduled
+            };
 
-        //    return Results.Ok(new { entry.Pseudoniem });
-        //})
-        //.RequireAuthorization("Internal")
-        //.WithName("GetPseudoniemByBsn");
+            await db.Appointments.AddAsync(newAppointment);
+
+            await db.SaveChangesAsync();
+
+            PatientDto patientDto = new(patient.Id, patient.Name);
+            AppointmentDto appointmentDto = new(
+                newAppointment.Id, 
+                patientDto, 
+                newAppointment.DateTime, 
+                newAppointment.PhysicianId, 
+                newAppointment.ReferalId, 
+                newAppointment.ArrivalStatus.ToString(), 
+                newAppointment.ScheduleStatus.ToString()
+            );
+
+            return Results.Ok(new { Message = "New appointment scheduled", newAppointment = appointmentDto });
+        });
 
         return app;
     }
+    public record ScheduleAppointmentRequest(Guid PatientId, DateTime DateTime);
+    public record PatientDto(Guid Id, string Name);
+    public record AppointmentDto(Guid id, PatientDto patient, DateTime DateTime, Guid PhysicianId, Guid ReferalId, string ArrivalStatus, string ScheduleStatus);
 }

@@ -21,7 +21,7 @@ public class PatientRegisteredConsumer : IConsumer<PatientRegistered>
         _logger.LogInformation("Patient Registered: {Id} - Name: {Name} at {Time}",
             context.Message.PatientId, context.Message.Name, context.Message.RegisteredAt);
 
-        _appointmentDbContext.Add(
+        _appointmentDbContext.Patients.Add(
                 new PatientSmall()
                 {
                     Id = context.Message.PatientId,
