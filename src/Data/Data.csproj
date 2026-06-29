@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="DbMigrations\AppointmentManagementDb\" />
+    <Folder Include="DbMigrations\MedicalTreatmentDb\" />
   </ItemGroup>
 
 </Project>

@@ -13,6 +13,10 @@ builder.Services.AddDbContext<AppointmentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AppointmentManagementDb"))
 );
 
+builder.Services.AddDbContext<MedicalTreatmentDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MedicalTreatmentDb"))
+);
+
 //Dit zorgt ervoor dat de migraties worden uitgevoerd voor alle db's
 builder.Services.AddHostedService<Worker>();
 

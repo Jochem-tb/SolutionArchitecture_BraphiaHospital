@@ -5,6 +5,7 @@
   <Project Path="src/DossierApi/DossierApi.csproj" Id="56f01835-ee33-4c5d-808a-65b98b8df648" />
   <Project Path="src/IdentityApi/IdentityApi.csproj" Id="e29d02e4-af7d-4a4f-a9cb-db1ccd4ff22d" />
   <Project Path="src/MessageService/MessageService.csproj" />
+  <Project Path="src/MedicalTreatmentApi/MedicalTreatmentApi.csproj" />
   <Project Path="src/PatientService/PatientService.csproj" />
   <Project Path="src/PatientWebsite/PatientWebsite.csproj" Id="2043b161-01a6-4cb0-b1da-e18190ee09b1" />
   <Project Path="src/PseudoniemApi/PseudoniemApi.csproj" Id="68f3cd01-8e41-41e5-9a6a-bde1bf2fc6ea" />
