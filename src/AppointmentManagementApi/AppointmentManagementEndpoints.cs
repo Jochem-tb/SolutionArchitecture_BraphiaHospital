@@ -2,9 +2,11 @@
 using Data.DbContexts;
 using Data.Enums;
 using Data.Models;
+using EventStore.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace AppointmentManagementApi;
 
@@ -12,7 +14,7 @@ public static class AppointmentManagementEndpoints
 {
     public static WebApplication MapAppointmentManagementEndpoints(this WebApplication app)
     {
-        app.MapPost("/appointment", async ([FromBody] ScheduleAppointmentRequest request, AppointmentDbContext db, IPublishEndpoint publishEndpoint) =>
+        app.MapPost("/appointment", async ([FromBody] ScheduleAppointmentRequest request, AppointmentDbContext db, IPublishEndpoint publishEndpoint, EventStoreClient client) =>
         {
 
             PatientSmall? patient = await db.Patients.FirstOrDefaultAsync(x => x.Id == request.PatientId);
@@ -46,6 +48,11 @@ public static class AppointmentManagementEndpoints
             };
 
             await publishEndpoint.Publish(message);
+
+            var appointmentPlanned = message;
+            var utf8Bytes = JsonSerializer.SerializeToUtf8Bytes(appointmentPlanned);
+            var eventData = new EventData(Uuid.NewUuid(), nameof(appointmentPlanned), utf8Bytes.AsMemory());
+            var writeResult = await client.AppendToStreamAsync(AppointmentPlanned.StreamName, StreamState.Any, [eventData]);
 
             PatientDto patientDto = new(patient.Id, patient.Name);
             AppointmentDto appointmentDto = new(

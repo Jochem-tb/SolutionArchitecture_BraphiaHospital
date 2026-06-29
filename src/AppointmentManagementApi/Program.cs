@@ -15,6 +15,8 @@ builder.Services.AddDbContext<AppointmentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AppointmentManagementDb"))
 );
 
+builder.Services.AddEventStoreClient(builder.Configuration.GetConnectionString("EventStoreDb")!);
+
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<PatientRegisteredConsumer>();

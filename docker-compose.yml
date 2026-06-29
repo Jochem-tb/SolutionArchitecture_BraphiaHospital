@@ -35,6 +35,25 @@ services:
       retries: 10
       start_period: 30s
 
+  eventstore:
+    image: eventstore/eventstore:lts
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_NODE_PORT=2113
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - "2113:2113"
+    volumes:
+      - type: volume
+        source: eventstore-volume-data
+        target: /var/lib/eventstore
+      - type: volume
+        source: eventstore-volume-logs
+        target: /var/log/eventstore
+
   migration:
     build:
       context: .
@@ -135,14 +154,19 @@ services:
       - "7080:8080"
       environment:
         ConnectionStrings__AppointmentManagementDb: "Server=sqlserver,1433;Database=AppointmentManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+        ConnectionStrings__EventStoreDb: "esdb://eventstore:2113?tls=false"
       depends_on:
         rabbitmq:
           condition: service_healthy
         migration:
           condition: service_completed_successfully
+        eventstore:
+          condition: service_healthy
 
 volumes:
   sqldata:
   rabbitmq-lib:
     driver: local
   rabbitmq-log:
+  eventstore-volume-data:
+  eventstore-volume-logs:
