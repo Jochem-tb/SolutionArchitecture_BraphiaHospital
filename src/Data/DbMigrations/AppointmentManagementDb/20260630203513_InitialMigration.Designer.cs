@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.DbMigrations.AppointmentManagementDb
 {
     [DbContext(typeof(AppointmentDbContext))]
-    [Migration("20260626152328_InitialMigration")]
+    [Migration("20260630203513_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -37,9 +37,6 @@ namespace Data.DbMigrations.AppointmentManagementDb
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("HealthQuestionaireId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("PatientId")
                         .HasColumnType("uniqueidentifier");
 
@@ -53,10 +50,6 @@ namespace Data.DbMigrations.AppointmentManagementDb
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HealthQuestionaireId")
-                        .IsUnique()
-                        .HasFilter("[HealthQuestionaireId] IS NOT NULL");
 
                     b.HasIndex("PatientId");
 
@@ -78,6 +71,9 @@ namespace Data.DbMigrations.AppointmentManagementDb
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AppointmentId")
+                        .IsUnique();
+
                     b.ToTable("HealthQuestionaires");
                 });
 
@@ -98,25 +94,29 @@ namespace Data.DbMigrations.AppointmentManagementDb
 
             modelBuilder.Entity("Data.Models.Appointment", b =>
                 {
-                    b.HasOne("Data.Models.HealthQuestionaire", "HealthQuestionaire")
-                        .WithOne("Appointment")
-                        .HasForeignKey("Data.Models.Appointment", "HealthQuestionaireId");
-
                     b.HasOne("Data.Models.PatientSmall", "Patient")
                         .WithMany("Appointments")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("HealthQuestionaire");
-
                     b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Data.Models.HealthQuestionaire", b =>
                 {
-                    b.Navigation("Appointment")
+                    b.HasOne("Data.Models.Appointment", "Appointment")
+                        .WithOne("HealthQuestionaire")
+                        .HasForeignKey("Data.Models.HealthQuestionaire", "AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Appointment");
+                });
+
+            modelBuilder.Entity("Data.Models.Appointment", b =>
+                {
+                    b.Navigation("HealthQuestionaire");
                 });
 
             modelBuilder.Entity("Data.Models.PatientSmall", b =>

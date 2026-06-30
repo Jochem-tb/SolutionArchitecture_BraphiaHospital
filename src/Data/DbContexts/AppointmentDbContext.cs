@@ -24,10 +24,10 @@ public class AppointmentDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Appointment>()
-            .HasOne(a => a.HealthQuestionaire)
-            .WithOne(h => h.Appointment)
-            .HasForeignKey<Appointment>(a => a.HealthQuestionaireId);
+        modelBuilder.Entity<HealthQuestionaire>()
+            .HasOne(h => h.Appointment)
+            .WithOne(a => a.HealthQuestionaire)
+            .HasForeignKey<HealthQuestionaire>(h => h.AppointmentId);
 
         modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Patient)

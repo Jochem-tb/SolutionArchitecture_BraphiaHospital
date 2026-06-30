@@ -2,6 +2,7 @@
 
 public record SurveyCompleted
 {
+    public static string StreamName = "Appointment";
     public required Guid SurveyId { get; init; }
     public required Guid AppointmentId { get; init; }
     public required Guid PatientId { get; init; }

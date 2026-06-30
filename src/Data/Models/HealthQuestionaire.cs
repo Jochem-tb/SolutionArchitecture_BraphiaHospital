@@ -6,8 +6,8 @@ namespace Data.Models;
 
 public class HealthQuestionaire
 {
-    public required Guid Id { get; set; }
-    public required Guid AppointmentId { get; set; }
+    public Guid Id { get; set; }
+    public Guid AppointmentId { get; set; }
     public required string HealthDataJSON { get; set; }
-    public required Appointment Appointment { get; set; }
+    public Appointment Appointment { get; set; } = null!;
 }
