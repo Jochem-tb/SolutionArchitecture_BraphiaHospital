@@ -97,15 +97,23 @@ public sealed class PatientCareReadProjector : IPatientCareReadProjector
 
     private async Task<PatientDossierReadModel> EnsureDossierAsync(Guid patientId, CancellationToken cancellationToken)
     {
-        await _readDbContext.Database.ExecuteSqlInterpolatedAsync($@"
-IF NOT EXISTS (SELECT 1 FROM [PatientDossiers] WHERE [PatientId] = {patientId})
-BEGIN
-    INSERT INTO [PatientDossiers] ([PatientId], [LastUpdatedAt], [PatientName])
-    VALUES ({patientId}, {DateTime.UtcNow}, {string.Empty})
-END", cancellationToken);
+        var existing = await _readDbContext.PatientDossiers
+            .FirstOrDefaultAsync(x => x.PatientId == patientId, cancellationToken);
 
-        var dossier = await _readDbContext.PatientDossiers
-            .FirstAsync(x => x.PatientId == patientId, cancellationToken);
+        if (existing is not null)
+        {
+            return existing;
+        }
+
+        var dossier = new PatientDossierReadModel
+        {
+            PatientId = patientId,
+            LastUpdatedAt = DateTime.UtcNow,
+            PatientName = string.Empty,
+        };
+
+        await _readDbContext.PatientDossiers.AddAsync(dossier, cancellationToken);
+        await _readDbContext.SaveChangesAsync(cancellationToken);
 
         return dossier;
     }

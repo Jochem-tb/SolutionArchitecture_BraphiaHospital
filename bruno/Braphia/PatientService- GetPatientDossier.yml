@@ -1,0 +1,21 @@
+info:
+  name: PatientService- GetPatientDossier
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:7100/patient-care/dossiers/EDD98E63-6010-4D64-9F18-21B374C14F2A
+  body:
+    type: json
+    data: |-
+      {
+        "name" : "Johny Doe 123"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

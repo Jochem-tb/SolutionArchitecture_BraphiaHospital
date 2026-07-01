@@ -11,13 +11,12 @@ using PatientCare.Infrastructure.ReadDb;
 using PatientCare.Infrastructure.ReadDb.Projections;
 using PatientCare.Infrastructure.WriteDb.Repositories;
 using PatientCare.Infrastructure.WriteDb;
+using PatientCare.Queries.GetMedicalDossier;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-
-var enableProjectionErrorQueueReplay = builder.Configuration.GetValue<bool>("PatientCare:EnableProjectionErrorQueueReplay");
 
 var writeDbConnectionString = builder.Configuration.GetConnectionString("PatientCareWriteDb");
 var readDbConnectionString = builder.Configuration.GetConnectionString("PatientCareReadDb");
@@ -39,6 +38,7 @@ builder.Services.AddScoped<ICommandHandler<CreatePrescriptionCommand, Guid>, Cre
 builder.Services.AddScoped<ICommandHandler<UpsertPatientCacheCommand, Guid>, UpsertPatientCacheCommandHandler>();
 builder.Services.AddScoped<ICommandHandler<UpsertAppointmentCacheCommand, Guid>, UpsertAppointmentCacheCommandHandler>();
 builder.Services.AddScoped<IPatientCareReadProjector, PatientCareReadProjector>();
+builder.Services.AddScoped<GetMedicalDossierQueryHandler>();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -83,11 +83,6 @@ using (var scope = app.Services.CreateScope())
 {
     var writeDb = scope.ServiceProvider.GetRequiredService<PatientCareWriteDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
-
-    if (enableProjectionErrorQueueReplay)
-    {
-        logger.LogInformation("Projection error queue replay is ENABLED. Queue: patient-care-read-projections_error");
-    }
 
     writeDb.Database.Migrate();
 
