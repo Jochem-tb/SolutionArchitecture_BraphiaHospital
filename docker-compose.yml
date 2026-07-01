@@ -97,7 +97,7 @@ services:
       migration:
         condition: service_completed_successfully
       eventstore:
-  condition: service_healthy
+        condition: service_healthy
   
   
   medicaltreatmentapi:
@@ -136,3 +136,5 @@ volumes:
   rabbitmq-lib:
     driver: local
   rabbitmq-log:
+  eventstore-volume-data:
+  eventstore-volume-logs:
