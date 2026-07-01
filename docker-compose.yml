@@ -61,6 +61,7 @@ services:
         environment:
             ConnectionStrings__AppointmentManagementDb: "Server=sqlserver,1433;Database=AppointmentManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
             ConnectionStrings__PatientManagementDb: "Server=sqlserver,1433;Database=PatientManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+            ConnectionStrings__MedicalTreatmentDb: "Server=sqlserver,1433;Database=MedicalTreatmentDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
         depends_on:
             sqlserver:
                 condition: service_healthy

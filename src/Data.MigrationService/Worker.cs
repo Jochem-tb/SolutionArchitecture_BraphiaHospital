@@ -25,9 +25,11 @@ public class Worker(
             //Hier nieuwe db's toevoegen voor het uitvoeren van migraties
             var appointmentDbContext = scope.ServiceProvider.GetRequiredService<AppointmentDbContext>();
             var patientDbContext = scope.ServiceProvider.GetRequiredService<PatientDbContext>();
+            var medicalTreatmentDbContext = scope.ServiceProvider.GetRequiredService<MedicalTreatmentDbContext>();
 
             await RunMigrationAsync(appointmentDbContext, cancellationToken);
             await RunMigrationAsync(patientDbContext, cancellationToken);
+            await RunMigrationAsync(medicalTreatmentDbContext, cancellationToken);
             //  await SeedDataAsync(dbContext, cancellationToken);
         }
         catch (Exception ex)
