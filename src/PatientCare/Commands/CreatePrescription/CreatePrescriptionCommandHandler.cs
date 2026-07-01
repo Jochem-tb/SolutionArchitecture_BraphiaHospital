@@ -1,4 +1,6 @@
 using PatientCare.Commands.Abstractions;
+using MassTransit;
+using PatientCare.Contracts;
 using PatientCare.Domain.Write;
 using PatientCare.Infrastructure.WriteDb.Repositories;
 
@@ -8,10 +10,14 @@ public sealed class CreatePrescriptionCommandHandler
     : ICommandHandler<CreatePrescriptionCommand, Guid>
 {
     private readonly IPatientCareWriteRepository _patientCareWriteRepository;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public CreatePrescriptionCommandHandler(IPatientCareWriteRepository patientCareWriteRepository)
+    public CreatePrescriptionCommandHandler(
+        IPatientCareWriteRepository patientCareWriteRepository,
+        IPublishEndpoint publishEndpoint)
     {
         _patientCareWriteRepository = patientCareWriteRepository;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<Guid> HandleAsync(
@@ -37,6 +43,14 @@ public sealed class CreatePrescriptionCommandHandler
         };
 
         await _patientCareWriteRepository.AddPrescription(prescription, cancellationToken);
+        await _publishEndpoint.Publish(
+            new PrescriptionWritten(
+                prescription.PrescriptionId,
+                prescription.PatientId,
+                prescription.MedicationDetails,
+                prescription.PharmacyNotified),
+            cancellationToken);
+
         return prescription.PrescriptionId;
     }
 }

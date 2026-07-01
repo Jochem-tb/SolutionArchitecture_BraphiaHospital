@@ -4,15 +4,15 @@ using PatientCare.Contracts;
 using PatientCare.Domain.Write;
 using PatientCare.Infrastructure.WriteDb.Repositories;
 
-namespace PatientCare.Commands.AddMedicalHistoryEntry;
+namespace PatientCare.Commands.UpsertAppointmentCache;
 
-public sealed class AddMedicalHistoryEntryCommandHandler
-    : ICommandHandler<AddMedicalHistoryEntryCommand, Guid>
+public sealed class UpsertAppointmentCacheCommandHandler
+    : ICommandHandler<UpsertAppointmentCacheCommand, Guid>
 {
     private readonly IPatientCareWriteRepository _patientCareWriteRepository;
     private readonly IPublishEndpoint _publishEndpoint;
 
-    public AddMedicalHistoryEntryCommandHandler(
+    public UpsertAppointmentCacheCommandHandler(
         IPatientCareWriteRepository patientCareWriteRepository,
         IPublishEndpoint publishEndpoint)
     {
@@ -21,9 +21,14 @@ public sealed class AddMedicalHistoryEntryCommandHandler
     }
 
     public async Task<Guid> HandleAsync(
-        AddMedicalHistoryEntryCommand command,
+        UpsertAppointmentCacheCommand command,
         CancellationToken cancellationToken = default)
     {
+        if (command.AppointmentId == Guid.Empty)
+        {
+            throw new ArgumentException("AppointmentId is required.", nameof(command));
+        }
+
         if (command.PatientId == Guid.Empty)
         {
             throw new ArgumentException("PatientId is required.", nameof(command));
@@ -34,30 +39,23 @@ public sealed class AddMedicalHistoryEntryCommandHandler
             throw new ArgumentException("PhysicianId is required.", nameof(command));
         }
 
-        if (string.IsNullOrWhiteSpace(command.Notes))
+        var appointment = new AppointmentCache
         {
-            throw new ArgumentException("Notes are required.", nameof(command));
-        }
-
-        var entry = new MedicalHistoryEntry
-        {
-            EntryId = Guid.NewGuid(),
+            AppointmentId = command.AppointmentId,
             PatientId = command.PatientId,
             PhysicianId = command.PhysicianId,
-            Notes = command.Notes.Trim(),
-            Timestamp = command.Timestamp ?? DateTime.UtcNow,
+            ScheduledAt = command.ScheduledAt,
         };
 
-        await _patientCareWriteRepository.AddMedicalEntry(entry, cancellationToken);
+        await _patientCareWriteRepository.UpsertAppointmentCache(appointment, cancellationToken);
         await _publishEndpoint.Publish(
-            new MedicalEntryWritten(
-                entry.EntryId,
-                entry.PatientId,
-                entry.PhysicianId,
-                entry.Notes,
-                entry.Timestamp),
+            new AppointmentCacheUpserted(
+                appointment.AppointmentId,
+                appointment.PatientId,
+                appointment.PhysicianId,
+                appointment.ScheduledAt),
             cancellationToken);
 
-        return entry.EntryId;
+        return appointment.AppointmentId;
     }
 }

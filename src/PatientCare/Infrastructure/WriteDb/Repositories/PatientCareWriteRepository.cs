@@ -22,4 +22,36 @@ public class PatientCareWriteRepository : IPatientCareWriteRepository
         await _dbContext.Prescriptions.AddAsync(prescription, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task UpsertPatientCache(PatientCache patient, CancellationToken cancellationToken = default)
+    {
+        var existing = await _dbContext.Patients.FindAsync(new object[] { patient.PatientId }, cancellationToken);
+        if (existing is null)
+        {
+            await _dbContext.Patients.AddAsync(patient, cancellationToken);
+        }
+        else
+        {
+            existing.Name = patient.Name;
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpsertAppointmentCache(AppointmentCache appointment, CancellationToken cancellationToken = default)
+    {
+        var existing = await _dbContext.Appointments.FindAsync(new object[] { appointment.AppointmentId }, cancellationToken);
+        if (existing is null)
+        {
+            await _dbContext.Appointments.AddAsync(appointment, cancellationToken);
+        }
+        else
+        {
+            existing.PatientId = appointment.PatientId;
+            existing.PhysicianId = appointment.PhysicianId;
+            existing.ScheduledAt = appointment.ScheduledAt;
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }
