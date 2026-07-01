@@ -20,6 +20,7 @@ builder.Services.AddEventStoreClient(builder.Configuration.GetConnectionString("
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<PatientRegisteredConsumer>();
+    x.AddConsumer<PatientExaminedConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
