@@ -5,12 +5,12 @@ info:
 
 http:
   method: POST
-  url: http://localhost:7080/appointment/reschedule/check-in
+  url: http://localhost:7080/appointment/check-in
   body:
     type: json
     data: |-
       {
-          "AppointmentId": "A409160E-EBA2-424D-A1DE-CFC39609A476",
+          "AppointmentId": "{{currentAppointmentId}}",
           "ArrivalStatus": 2
       }
   auth: inherit

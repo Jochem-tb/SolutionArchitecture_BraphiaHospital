@@ -5,12 +5,12 @@ info:
 
 http:
   method: GET
-  url: http://localhost:7100/patient-care/dossiers/09B81AC6-5860-44B7-8D50-A88B03B18F07
+  url: http://localhost:7100/patient-care/dossiers/{{currentPatientId}}
   body:
     type: json
     data: |-
       {
-        "name" : "Johny Doe 123"
+        "name" : "Jan Doe"
       }
   auth: inherit
 

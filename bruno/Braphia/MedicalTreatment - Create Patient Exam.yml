@@ -10,8 +10,8 @@ http:
     type: json
     data: |-
       {
-        "AppointmentId": "09B81AC6-5860-44B7-8D50-A88B03B18F07",
-        "PatientId": "09B81AC6-5860-44B7-8D50-A88B03B18F07",
+        "AppointmentId": "{{currentAppointmentId}}",
+        "PatientId": "{{currentPatientId}}",
         "PhysicianId": "12345678-1234-1234-1234-123456789012",
         "TreatmentType": "General Consultation",
         "Results": "Patient shows signs of mild hypertension",
@@ -19,6 +19,18 @@ http:
         "Notes": "Patient advised to reduce salt intake and monitor blood pressure daily. Follow-up appointment scheduled in 2 weeks."
       }
   auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // Parse the response payload
+        const data = res.getBody();
+
+        // Access the nested 'id' inside 'newAppointment'
+        if (data && data.treatmentId) {
+          bru.setEnvVar("treatmentId", data.treatmentId);
+        }
 
 settings:
   encodeUrl: true

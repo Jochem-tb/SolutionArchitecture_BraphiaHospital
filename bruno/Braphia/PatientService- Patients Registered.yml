@@ -10,12 +10,27 @@ http:
     type: json
     data: |-
       {
-        "firstName" : "John",
+        "firstName" : "Jan",
         "lastName" : "Doe",
         "PhoneNumber": "+31 37 7755867",
-        "insuranceNumber" : "06123123548"
+        "insuranceNumber" : "06123123590"
       }
   auth: inherit
+
+runtime:
+  variables:
+    - name: patientId
+      value: ""
+  scripts:
+    - type: after-response
+      code: |-
+        // Parse the JSON response
+        const data = res.getBody();
+
+        // Verify patientId exists, then set it to the environment
+        if (data && data.patientId) {
+          bru.setEnvVar("currentPatientId", data.patientId);
+        }
 
 settings:
   encodeUrl: true

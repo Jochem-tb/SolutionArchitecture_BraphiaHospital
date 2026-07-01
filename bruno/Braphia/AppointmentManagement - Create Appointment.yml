@@ -10,10 +10,22 @@ http:
     type: json
     data: |-
       {
-        "PatientId" : "09B81AC6-5860-44B7-8D50-A88B03B18F07",
-        "DateTime" : "2027-07-01T00:00:00Z"
+        "PatientId" : "{{currentPatientId}}",
+        "DateTime" : "2026-09-01T00:00:00Z"
       }
   auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // Parse the response payload
+        const data = res.getBody();
+
+        // Access the nested 'id' inside 'newAppointment'
+        if (data && data.newAppointment && data.newAppointment.id) {
+          bru.setEnvVar("currentAppointmentId", data.newAppointment.id);
+        }
 
 settings:
   encodeUrl: true

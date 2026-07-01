@@ -11,11 +11,6 @@ http:
     data: ""
   auth: inherit
 
-runtime:
-  variables:
-    - name: treatmentId
-      value: c3fb658a-19d3-4635-822b-8c5232df98e9
-
 settings:
   encodeUrl: true
   timeout: 0
