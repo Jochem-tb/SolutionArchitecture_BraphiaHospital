@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:7100/patient-care/dossiers/EDD98E63-6010-4D64-9F18-21B374C14F2A
+  url: http://localhost:7100/patient-care/dossiers/09B81AC6-5860-44B7-8D50-A88B03B18F07
   body:
     type: json
     data: |-

@@ -1,0 +1,22 @@
+info:
+  name: Appointment post
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:7080/appointment
+  body:
+    type: json
+    data: |-
+      {
+        "PatientId" : "09B81AC6-5860-44B7-8D50-A88B03B18F07",
+        "DateTime" : "2027-07-01T00:00:00Z"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
