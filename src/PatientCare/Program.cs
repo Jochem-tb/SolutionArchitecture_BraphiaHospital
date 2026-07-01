@@ -1,6 +1,10 @@
 using MassTransit;
 using PatientCare;
+using PatientCare.Commands.Abstractions;
+using PatientCare.Commands.AddMedicalHistoryEntry;
+using PatientCare.Commands.CreatePrescription;
 using PatientCare.Infrastructure.ReadDb;
+using PatientCare.Infrastructure.WriteDb.Repositories;
 using PatientCare.Infrastructure.WriteDb;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +25,10 @@ builder.Services.AddDbContext<PatientCareWriteDbContext>(options =>
 
 builder.Services.AddDbContext<PatientCareReadDbContext>(options =>
     options.UseSqlServer(readDbConnectionString));
+
+builder.Services.AddScoped<IPatientCareWriteRepository, PatientCareWriteRepository>();
+builder.Services.AddScoped<ICommandHandler<AddMedicalHistoryEntryCommand, Guid>, AddMedicalHistoryEntryCommandHandler>();
+builder.Services.AddScoped<ICommandHandler<CreatePrescriptionCommand, Guid>, CreatePrescriptionCommandHandler>();
 
 builder.Services.AddMassTransit(x =>
 {
