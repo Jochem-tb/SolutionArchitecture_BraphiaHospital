@@ -15,8 +15,16 @@ builder.Services.AddMassTransit(x =>
             h.Username("admin");
             h.Password("admin123");
         });
+        
+        cfg.UseMessageRetry(r =>
+        {
+            r.Interval(5, TimeSpan.FromSeconds(5));
+        });
 
-        cfg.ConfigureEndpoints(context);
+        cfg.ReceiveEndpoint("message-service", e =>
+        {
+            e.ConfigureConsumers(context);
+        });
     });
 });
 
