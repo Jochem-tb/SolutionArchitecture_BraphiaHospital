@@ -59,7 +59,6 @@ services:
       context: .
       dockerfile: src/Data.MigrationService/Dockerfile
     environment:
-      ConnectionStrings__OnlineToestemmingDb: "Server=sqlserver,1433;Database=OnlineToestemming;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       ConnectionStrings__AppointmentManagementDb: "Server=sqlserver,1433;Database=AppointmentManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       ConnectionStrings__PatientManagementDb: "Server=sqlserver,1433;Database=PatientManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
     depends_on:
@@ -99,7 +98,6 @@ services:
       eventstore:
         condition: service_healthy
   
-  
   medicaltreatmentapi:
     build:
       context: .
@@ -114,19 +112,17 @@ services:
         condition: service_healthy
       migration:
         condition: service_completed_successfully
+
   integration:
     build:
       context: . 
       dockerfile: src/Data.Integration/Dockerfile
     ports:
-      - "5005:8080"
-      
+      - "5005:8080" 
     environment:
       CsvFilePath: "/app/Data/Imports/fake_customer_data_export.csv"
-      
     volumes:
       - ./src/Data/Imports:/app/Data/Imports:ro
-    
     depends_on:
       rabbitmq:
           condition: service_healthy

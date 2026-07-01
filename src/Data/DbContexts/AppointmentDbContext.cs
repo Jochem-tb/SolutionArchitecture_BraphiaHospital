@@ -1,5 +1,4 @@
 ﻿using Data.Models;
-using Data.OldModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.DbContexts;

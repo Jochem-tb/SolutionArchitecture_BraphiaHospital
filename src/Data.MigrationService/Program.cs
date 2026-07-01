@@ -5,10 +5,6 @@ using Microsoft.EntityFrameworkCore;
 var builder = Host.CreateApplicationBuilder(args);
 
 //Voeg database toe aan project, de database naam komt uit de connection string en die worden momenteel in docker-compose.yml gedefineerd
-builder.Services.AddDbContext<AllContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("OnlineToestemmingDb"))
-);
-
 builder.Services.AddDbContext<AppointmentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AppointmentManagementDb"))
 );
