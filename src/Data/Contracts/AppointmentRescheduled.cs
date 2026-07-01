@@ -2,6 +2,7 @@
 
 public record AppointmentRescheduled
 {
+    public static string StreamName = "Appointment";
     public required Guid AppointmentId { get; init; }
     public required Guid PatientId { get; init; }
     public required Guid PhysicianId { get; init; }
