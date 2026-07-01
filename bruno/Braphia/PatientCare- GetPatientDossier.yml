@@ -1,5 +1,5 @@
 info:
-  name: PatientService- GetPatientDossier
+  name: PatientCare- GetPatientDossier
   type: http
   seq: 3
 
