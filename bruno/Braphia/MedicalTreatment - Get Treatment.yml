@@ -1,0 +1,23 @@
+info:
+  name: MedicalTreatment - Get Treatment
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://localhost:7090/medical-treatments/{{treatmentId}}
+  body:
+    type: json
+    data: ""
+  auth: inherit
+
+runtime:
+  variables:
+    - name: treatmentId
+      value: c3fb658a-19d3-4635-822b-8c5232df98e9
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

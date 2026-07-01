@@ -1,0 +1,27 @@
+info:
+  name: MedicalTreatment - Create Patient Exam
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: http://localhost:7090/medical-treatments/exams
+  body:
+    type: json
+    data: |-
+      {
+        "AppointmentId": "09B81AC6-5860-44B7-8D50-A88B03B18F07",
+        "PatientId": "09B81AC6-5860-44B7-8D50-A88B03B18F07",
+        "PhysicianId": "12345678-1234-1234-1234-123456789012",
+        "TreatmentType": "General Consultation",
+        "Results": "Patient shows signs of mild hypertension",
+        "Diagnosis": "Hypertension Stage 1",
+        "Notes": "Patient advised to reduce salt intake and monitor blood pressure daily. Follow-up appointment scheduled in 2 weeks."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

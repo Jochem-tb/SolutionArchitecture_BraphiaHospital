@@ -1,0 +1,28 @@
+info:
+  name: MedicalTreatment - Add Medical History Note
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:7090/medical-treatments/{{treatmentId}}/notes
+  body:
+    type: json
+    data: |-
+      {
+        "PhysicianId": "12345678-1234-1234-1234-123456789012",
+        "EntryType": "Follow-up Note",
+        "Notes": "Patient reported improved condition. Blood pressure readings within normal range. Continue current treatment plan."
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: treatmentId
+      value: c3fb658a-19d3-4635-822b-8c5232df98e9
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
