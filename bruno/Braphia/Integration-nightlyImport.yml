@@ -1,0 +1,15 @@
+info:
+  name: Integration-nightlyImport
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:5005/integration/import-nightly
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
