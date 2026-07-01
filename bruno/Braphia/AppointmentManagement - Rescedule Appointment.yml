@@ -1,0 +1,22 @@
+info:
+  name: AppointmentManagement - Rescedule Appointment
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:7080/appointment/reschedule
+  body:
+    type: json
+    data: |-
+      {
+        "AppointmentId": "1E9056E9-77BB-4B6B-9E5A-83890775DC25",
+        "DateTime": "2026-07-30T00:00:00Z"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,7 +1,7 @@
 info:
   name: MedicalTreatment - Add Medical History Note
   type: http
-  seq: 6
+  seq: 10
 
 http:
   method: POST

@@ -1,7 +1,7 @@
 info:
   name: MedicalTreatment - Get Treatment
   type: http
-  seq: 5
+  seq: 9
 
 http:
   method: GET

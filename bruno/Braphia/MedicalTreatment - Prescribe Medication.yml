@@ -1,7 +1,7 @@
 info:
   name: MedicalTreatment - Prescribe Medication
   type: http
-  seq: 7
+  seq: 11
 
 http:
   method: POST

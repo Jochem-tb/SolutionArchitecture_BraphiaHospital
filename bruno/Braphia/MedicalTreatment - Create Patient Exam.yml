@@ -1,7 +1,7 @@
 info:
   name: MedicalTreatment - Create Patient Exam
   type: http
-  seq: 4
+  seq: 8
 
 http:
   method: POST

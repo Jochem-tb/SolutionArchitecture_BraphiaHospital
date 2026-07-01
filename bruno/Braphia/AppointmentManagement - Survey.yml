@@ -1,0 +1,22 @@
+info:
+  name: AppointmentManagement - Survey
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: http://localhost:7080/appointment/survey
+  body:
+    type: json
+    data: |-
+      {
+        "AppointmentId": "A409160E-EBA2-424D-A1DE-CFC39609A476",
+        "SurveyJson": "{\"general_health_perception\":{\"question\":\"How would you describe your overall health?\",\"answer\":\"Generally good, occasional fatigue but no major issues.\"},\"energy_levels\":{\"question\":\"How is your typical daily energy level?\",\"answer\":\"Moderate during the day, lower in the late afternoon.\"},\"sleep\":{\"question\":\"How well do you sleep on average?\",\"answer\":\"6–7 hours per night, sometimes waking up once.\"},\"appetite\":{\"question\":\"Have you noticed any changes in your appetite?\",\"answer\":\"No significant changes, appetite is stable.\"},\"physical_activity\":{\"question\":\"How physically active are you in a typical week?\",\"answer\":\"Light exercise 2–3 times per week, mostly walking.\"},\"stress_level\":{\"question\":\"How would you rate your current stress level?\",\"answer\":\"Moderate stress due to work, manageable most days.\"},\"mood\":{\"question\":\"How has your mood generally been lately?\",\"answer\":\"Mostly stable, occasional low days but nothing persistent.\"},\"pain_or_discomfort\":{\"question\":\"Do you experience any regular pain or discomfort?\",\"answer\":\"Occasional mild back stiffness after long sitting.\"},\"digestive_health\":{\"question\":\"How is your digestion usually?\",\"answer\":\"Normal, occasional bloating after large meals.\"},\"hydration\":{\"question\":\"How much water do you drink daily?\",\"answer\":\"About 1.5–2 liters per day.\"},\"substance_use\":{\"question\":\"Do you use alcohol, tobacco, or other substances?\",\"answer\":\"Occasional alcohol, no tobacco or recreational drugs.\"},\"health_changes\":{\"question\":\"Have you noticed any recent changes in your health?\",\"answer\":\"No major changes recently.\"},\"health_goals\":{\"question\":\"Do you have any health goals right now?\",\"answer\":\"Improve fitness and maintain consistent energy levels.\"}}"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

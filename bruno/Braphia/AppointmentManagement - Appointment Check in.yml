@@ -1,0 +1,22 @@
+info:
+  name: AppointmentManagement - Appointment Check in
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:7080/appointment/reschedule/check-in
+  body:
+    type: json
+    data: |-
+      {
+          "AppointmentId": "A409160E-EBA2-424D-A1DE-CFC39609A476",
+          "ArrivalStatus": 2
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
