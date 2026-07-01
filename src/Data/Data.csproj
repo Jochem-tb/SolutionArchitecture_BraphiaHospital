@@ -20,4 +20,10 @@
     <Folder Include="DbMigrations\MedicalTreatmentDb\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Imports\fake_customer_data_export.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

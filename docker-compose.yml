@@ -35,25 +35,6 @@ services:
       retries: 10
       start_period: 30s
 
-  eventstore:
-    image: eventstore/eventstore:lts
-    environment:
-      - EVENTSTORE_CLUSTER_SIZE=1
-      - EVENTSTORE_RUN_PROJECTIONS=All
-      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
-      - EVENTSTORE_NODE_PORT=2113
-      - EVENTSTORE_INSECURE=true
-      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
-    ports:
-      - "2113:2113"
-    volumes:
-      - type: volume
-        source: eventstore-volume-data
-        target: /var/lib/eventstore
-      - type: volume
-        source: eventstore-volume-logs
-        target: /var/log/eventstore
-
   migration:
     build:
       context: .
@@ -61,71 +42,11 @@ services:
     environment:
       ConnectionStrings__OnlineToestemmingDb: "Server=sqlserver,1433;Database=OnlineToestemming;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       ConnectionStrings__AppointmentManagementDb: "Server=sqlserver,1433;Database=AppointmentManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
-      ConnectionStrings__MedicalTreatmentDb: "Server=sqlserver,1433;Database=MedicalTreatmentDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
+      ConnectionStrings__PatientManagementDb: "Server=sqlserver,1433;Database=PatientManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
     depends_on:
       sqlserver:
         condition: service_healthy
     restart: "no"
-
-  identityapi:
-    build:
-      context: .
-      dockerfile: src/IdentityApi/Dockerfile
-    environment:
-      ASPNETCORE_HTTP_PORTS: "8080"
-      ConnectionStrings__OnlineToestemmingDb: "Server=sqlserver,1433;Database=OnlineToestemming;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
-      JwtSettings__SecretSigningKey: ${JWT_SECRET_KEY}
-    ports:
-      - "7061:8080"
-    depends_on:
-      migration:
-        condition: service_completed_successfully
-
-  pseudoniemapi:
-    build:
-      context: .
-      dockerfile: src/PseudoniemApi/Dockerfile
-    environment:
-      ASPNETCORE_HTTP_PORTS: "8080"
-      ConnectionStrings__OnlineToestemmingDb: "Server=sqlserver,1433;Database=OnlineToestemming;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
-      JwtSettings__SecretSigningKey: ${JWT_SECRET_KEY}
-    ports:
-      - "7070:8080"
-    depends_on:
-      migration:
-        condition: service_completed_successfully
-
-  dossierapi:
-    build:
-      context: .
-      dockerfile: src/DossierApi/Dockerfile
-    environment:
-      ASPNETCORE_HTTP_PORTS: "8080"
-      ConnectionStrings__OnlineToestemmingDb: "Server=sqlserver,1433;Database=OnlineToestemming;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
-      JwtSettings__SecretSigningKey: ${JWT_SECRET_KEY}
-      Services__IdentityApi: "http://identityapi:8080"
-      Services__PseudoniemApi: "http://pseudoniemapi:8080"
-    ports:
-      - "7203:8080"
-    depends_on:
-      migration:
-        condition: service_completed_successfully
-
-  patientwebsite:
-    build:
-      context: .
-      dockerfile: src/PatientWebsite/Dockerfile
-    environment:
-      ASPNETCORE_HTTP_PORTS: "8080"
-      ConnectionStrings__OnlineToestemmingDb: "Server=sqlserver,1433;Database=OnlineToestemming;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
-      Services__IdentityApi: "http://identityapi:8080"
-    ports:
-      - "8080:8080"
-    depends_on:
-      migration:
-        condition: service_completed_successfully
-      identityapi:
-        condition: service_started
         
   patientservice:
     build:
@@ -133,20 +54,15 @@ services:
       dockerfile: src/PatientService/Dockerfile
     ports:
       - "5000:8080"
+    environment:
+      ConnectionStrings__PatientManagementDb: "Server=sqlserver,1433;Database=PatientManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
     # 2. Update this to wait for the health check
     depends_on:
       rabbitmq:
         condition: service_healthy
-  
-  messageservice:
-      build:
-        context: .
-        dockerfile: src/MessageService/Dockerfile
-      # 3. Update this to wait for the health check
-      depends_on:
-        rabbitmq:
-          condition: service_healthy
-
+      migration:
+        condition: service_completed_successfully
+ 
   appointmentmanagementapi:
       build:
         context: .
@@ -154,35 +70,32 @@ services:
       ports:
       - "7080:8080"
       environment:
-        ConnectionStrings__AppointmentManagementDb: "Server=sqlserver,1433;Database=AppointmentManagementDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
-        ConnectionStrings__EventStoreDb: "esdb://eventstore:2113?tls=false"
+        ConnectionStrings__AppointmentManagement: "Server=sqlserver,1433;Database=AppointmentManagement;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
       depends_on:
         rabbitmq:
           condition: service_healthy
         migration:
           condition: service_completed_successfully
-        eventstore:
+          
+  integration:
+    build:
+      context: . 
+      dockerfile: src/Data.Integration/Dockerfile
+    ports:
+      - "5005:8080"
+      
+    environment:
+      CsvFilePath: "/app/Data/Imports/fake_customer_data_export.csv"
+      
+    volumes:
+      - ./src/Data/Imports:/app/Data/Imports:ro
+    
+    depends_on:
+      rabbitmq:
           condition: service_healthy
-
-  medicaltreatmentapi:
-      build:
-        context: .
-        dockerfile: src/MedicalTreatmentApi/Dockerfile
-      ports:
-      - "7090:8080"
-      environment:
-        ASPNETCORE_HTTP_PORTS: "8080"
-        ConnectionStrings__MedicalTreatmentDb: "Server=sqlserver,1433;Database=MedicalTreatmentDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True"
-      depends_on:
-        rabbitmq:
-          condition: service_healthy
-        migration:
-          condition: service_completed_successfully
 
 volumes:
   sqldata:
   rabbitmq-lib:
     driver: local
   rabbitmq-log:
-  eventstore-volume-data:
-  eventstore-volume-logs:

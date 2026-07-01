@@ -5,12 +5,15 @@ info:
 
 http:
   method: POST
-  url: http://localhost:5000/patients
+  url: http://localhost:5000/api/patient/register
   body:
     type: json
     data: |-
       {
-        "name" : "John Doe"
+        "firstName" : "John",
+        "lastName" : "Doe",
+        "PhoneNumber": "+31 37 7755867",
+        "insuranceNumber" : "06123123548"
       }
   auth: inherit
 
