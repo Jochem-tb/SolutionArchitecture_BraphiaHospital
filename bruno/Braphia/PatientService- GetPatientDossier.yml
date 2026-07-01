@@ -8,10 +8,7 @@ http:
   url: http://localhost:7100/patient-care/dossiers/{{currentPatientId}}
   body:
     type: json
-    data: |-
-      {
-        "name" : "Jan Doe"
-      }
+    data: ""
   auth: inherit
 
 settings:
